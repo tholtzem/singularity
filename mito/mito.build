@@ -1,0 +1,25 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%setup
+mkdir -p $SINGULARITY_ROOTFS/scratch
+
+%post
+apt update
+apt -y upgrade
+apt -y install vim less gcc make git build-essential pkg-config libglib2.0-dev automake autotools-dev
+
+cd /opt
+git clone https://github.com/nathanweeks/exonerate.git
+cd exonerate
+git checkout v2.4.0
+./configure
+make
+make check
+make install
+
+cd /opt
+git clone https://github.com/cmayer/MitoGeneExtractor.git
+cd MitoGeneExtractor/
+make
+cp MitoGeneExtractor-v* /usr/local/bin/MitoGeneExtractor

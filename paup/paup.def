@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%labels
+    Author tholtzem
+    Version paup4a169
+    Description "Singularity image for PAUP"
+
+%post
+# Update and install dependencies
+apt-get update
+apt-get -y install wget \
+    build-essential \
+    libreadline-dev \
+    zlib1g-dev \
+    gfortran \
+    libcurl4-gnutls-dev \
+    python2.7 \
+    python2.7-dev
+
+apt-get -y clean
+apt-get -y autoremove
+
+# Installation
+## Download PAUP
+cd /opt/
+wget http://phylosolutions.com/paup-test/paup4a169_ubuntu64.gz  # Replace with the actual URL
+# Extract and install PAUP
+gunzip paup4a169_ubuntu64.gz
+chmod +x paup4a169_ubuntu64 # Ensure the file is executable
+
+%environment
+    # Set up environment variables
+    export PATH=/opt:$PATH
+    export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+
+%runscript
+    exec /opt/paup4a169_ubuntu64 "$@"
